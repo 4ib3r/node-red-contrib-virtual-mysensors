@@ -1,5 +1,7 @@
 var TcpProxy = require('../lib/tcp_proxy');
 var types = require('../lib/types');
+var events = require('events');
+
 
 module.exports = function (RED) {
     function MyGateway(n) {
@@ -12,10 +14,15 @@ module.exports = function (RED) {
             var msn = this.ms_nodes[i];
             this.ms_nodes[i] = this.proxy.addNode(msn.id, msn.name);
         }
-        this.proxy.listen();
+        var node = this;
+        this.proxy.listen(
+            function (cnt) { node.emit("connected", cnt); },
+            function (cnt) { node.emit("disconnect", cnt); }
+        );
         this.on('close', function (removed, done) {
             this.proxy.close(done);
         }.bind(this));
+        events.EventEmitter.call(this);
     }
 
     RED.nodes.registerType("MyGateway", MyGateway);

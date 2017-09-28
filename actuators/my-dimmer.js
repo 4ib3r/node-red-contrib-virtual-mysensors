@@ -11,19 +11,22 @@ module.exports = function (RED) {
         Helper.inputEvent(RED, node, sensor);
 
         sensor.onValueUpdate = function (valType, val, cb, req) {
+            var valStatus = null, valDimmer = null;
             if ((req && node.reqState) || !req) {
-                var status = sensor.value[types.SUBTYPES.V_STATUS] == "1";
-                if (valType == types.SUBTYPES.V_PERCENTAGE && val > 0) {
-                    status = true;
-                }
                 var value = parseInt(sensor.value[types.SUBTYPES.V_PERCENTAGE]);
-                if (node.switchValue) {
-                    value = (status ? value : 0);
+                if (valType == types.SUBTYPES.V_STATUS) {
+                    valStatus = {payload: val == "1", topic: "V_STATUS", req: req}
+                    if (node.switchValue) {
+                        value = (val == "1" ? value : 0);
+                        valDimmer = {payload: value, topic: "V_PERCENTAGE", req: req};
+                    }
+                } else if (valType == types.SUBTYPES.V_PERCENTAGE) {
+                    valDimmer = {payload: value, topic: "V_PERCENTAGE", req: req};
+                    if (value > 0) {
+                        valStatus = {payload: true, topic: "V_STATUS", req: req}
+                    }
                 }
-                node.send([
-                    {payload: status, topic: "V_STATUS", req: req},
-                    {payload: value, topic: "V_PERCENTAGE", req: req}
-                ]);
+                node.send([valStatus, valDimmer ]);
             }
             cb();
         };

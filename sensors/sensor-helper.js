@@ -5,6 +5,12 @@ var helper = {
         RED.nodes.createNode(node, config);
         node.log("Gateway: " + JSON.stringify(config.gateway));
         node.gateway = RED.nodes.getNode(config.gateway);
+        node.gateway.on("connected", function(cnt) {
+            node.status({fill: "green", shape: "dot", text: cnt});
+        });
+        node.gateway.on("disconnected", function(cnt) {
+            node.status({fill: "red", shape: "dot", text: cnt});
+        });
         node.msnode = config.msnode || 0;
         node.reqState = config.reqState || true;
         node.switchValue = config.switchValue || false;
