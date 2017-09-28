@@ -1,0 +1,92 @@
+<script type="text/javascript">
+    RED.nodes.registerType('MyBinary', {
+        category: 'MySensors in',
+        color: '#C0DEED',
+        defaults: {
+            gateway: {value: "", type: "MyGateway"},
+            name: {value: "Binary"},
+            msnode: {value: "", required: true},
+            nodeId: {value: "", required: true, validate:RED.validators.number() },
+            reqState: {value: true, required: true}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "serial.png",
+        label: function () {
+            return this.name;
+        },
+        oneditprepare: function () {
+            function gatewaySelect() {
+                var id = $("#node-input-gateway").val();
+                var val = node.msnode;
+                $("#node-input-msnode").find("option").remove();
+                var gw = null;
+                if (id) {
+                    gw = RED.nodes.node(id);
+                }
+                if (gw) {
+                    var nodes = gw.ms_nodes;
+                    for (var i = 0; i < nodes.length; i++) {
+                        var n = nodes[i];
+                        var opt = $("<option value='" + n.id + "'>" + n.name + "</option>").appendTo("#node-input-msnode");
+                        if (n.id == val) {
+                            opt.attr("selected", "selected");
+                        }
+                    }
+                }
+            }
+            $("#node-input-gateway").change(gatewaySelect);
+            gatewaySelect();
+        },
+        oneditsave: function () {
+            if ($("#node-input-nodeId").val() === "") {
+                var gw = $("#node-input-gateway").val();
+                var nodeId = $("#node-input-msnode").val();
+                var msnode = RED.nodes.node(gw).ms_nodes.filter(function (s) {
+                    return s.id == nodeId
+                })[0];
+                if (!msnode.hasOwnProperty('childs')) {
+                    msnode.childs = [];
+                }
+                var i = 0;
+                while (i < 100) {
+                    i++;
+                    if (msnode.childs.indexOf(i) == -1) {
+                        msnode.childs.push(i);
+                        $("#node-input-nodeId").val(i);
+                        break;
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="MyBinary">
+    <div class="form-row">
+        <label for="node-input-gateway"><i class="fa fa-plug"></i> Gateway</label>
+        <select type="text" id="node-input-gateway" placeholder="Gateway"></select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-msnode"><i class="fa fa-sign-out"></i> Node</label>
+        <select type="text" id="node-input-msnode"></select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tags"></i> Sensor id</label>
+        <input type="text" id="node-input-nodeId">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label><i class="fa fa-retweet"></i>Send msg</label>
+        <input type="checkbox" id="node-input-reqState" style="display:inline-block; width:auto; vertical-align:top;">
+        &nbsp;on request response
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="MyBinary">
+    <p>MySensors S_BINARY Actuator</p>
+
+</script>

@@ -1,0 +1,11 @@
+### Node template
+logs
+*.log
+npm-debug.log*
+node_modules/
+.npm
+.eslintcache
+.node_repl_history
+*.tgz
+.idea/
+.idea_modules/

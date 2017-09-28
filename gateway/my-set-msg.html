@@ -1,0 +1,42 @@
+<script type="text/javascript">
+    RED.nodes.registerType('MySetMsg',{
+        category: 'MySensors in',
+        color: '#E2D96E',
+        defaults: {
+            name: {value:""},
+            msType: {value: null, required: true}
+        },
+        inputs:1,
+        outputs: 1,
+        icon: "inject.png",
+        label: function() {
+            return this.name || "Set: " + this.msType;
+        },
+        oneditprepare: function() {
+            $.getJSON("/mysensors/types", function(types) {
+                $("#node-input-msType").find("option").remove();
+                for (var i in types) {
+                    var opt = $("<option value='" + i + "'>" + i + "</option>").appendTo("#node-input-msType");
+                    if (i == this.msType) {
+                        opt.attr("selected", "selected");
+                    }
+                }
+            });
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="MySetMsg">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-msType"><i class="icon-tag"></i> Value type</label>
+        <select type="text" id="node-input-msType"></select>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="MySetMsg">
+    <p>MySensors Custom set message wrapper for Sensor</p>
+</script>

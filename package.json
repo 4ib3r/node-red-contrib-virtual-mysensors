@@ -1,0 +1,34 @@
+{
+  "name": "node-red-virtual-mysensors",
+  "version": "1.0.0",
+  "description": "Virtual MySensors sensors",
+  "keywords": [
+    "node-red"
+  ],
+  "main": "none",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Adrian Sławiński <adrian.slawinski@javadevelopers.pl>",
+  "license": "ISC",
+  "node-red": {
+    "version": ">=0.14.0",
+    "nodes": {
+      "MyGateway": "gateway/my-gateway.js",
+      "MySetMsg": "gateway/my-set-msg.js",
+
+      "MyMotion": "sensors/my-motion.js",
+      "MyDoor": "sensors/my-door.js",
+      "MyTemperature": "sensors/my-temp.js",
+      "MyHumidity": "sensors/my-hum.js",
+      "MyBarometer": "sensors/my-baro.js",
+
+      "MyHeater": "actuators/my-heater.js",
+      "MyRGB": "actuators/my-rgb.js",
+      "MyDimmer": "actuators/my-dimmer.js",
+      "MyBinary": "actuators/my-binary.js",
+      "MyScene": "actuators/my-scene.js",
+      "MyIR": "actuators/my-ir.js"
+    }
+  }
+}

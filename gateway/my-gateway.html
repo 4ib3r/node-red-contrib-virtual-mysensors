@@ -1,0 +1,86 @@
+<script type="text/javascript">
+    RED.nodes.registerType('MyGateway',{
+        category: 'config',
+        defaults: {
+            host: {value:"localhost",required:true},
+            port: {value:1234,required:true,validate:RED.validators.number()},
+            ms_nodes: [{name: 'Gateway'}]
+        },
+        label: function() {
+            return this.host+":"+this.port;
+        },
+        oneditprepare: function() {
+            var node = this;
+                        $("#node-input-nodes-container").css('min-height','250px').css('min-width','300px').editableList({
+                addItem: function(container, i, opt) {
+                                        if (!opt.hasOwnProperty('idx')) {
+                        opt.id = 1;
+                        $("#node-input-nodes-container").find('.node-input-nodes-container-index').each(function() {
+                            var v = parseInt($(this).text());
+                            if (opt.id < v) opt.id = v;
+                        });
+                        opt.id++;
+                        
+                    }
+                    if (!opt.hasOwnProperty('name')) {
+                        opt.name = 'node_' + opt.id;
+                    }
+                    var row = $('<div/>').appendTo(container);
+                    var finalspan = $('<span>Node:</span>').appendTo(row);
+                    var idxSpan = $('<span class="node-input-nodes-container-index">'+(opt.id)+'</span>').appendTo(row);
+                    idxSpan.attr("data-idx", opt.id);
+                    var input = $("<input/>",{class:"node-input-nodes-container-value",type:"text",style:"margin-left: 5px;"}).appendTo(row);
+                    input.val(opt.name);
+                },
+                removeItem: function(opt) {
+                    var ms_nodes = $("#node-input-nodes-container").editableList('items');
+                    node.ms_nodes = [];
+                    ms_nodes.each(function(i) {
+                                            });
+                },
+                sortable: false,
+                removable: true
+            });
+            for (var i = 0; i < this.ms_nodes.length; i++) {
+                var msn = this.ms_nodes[i];
+                $("#node-input-nodes-container").editableList('addItem', {name: msn.name, i: msn.id});   
+            }
+        },
+        oneditsave: function() {
+            var msNodes = $("#node-input-nodes-container").editableList('items');
+            var node = this;
+            node.ms_nodes = [];
+            msNodes.each(function(i) {
+                                var n = {childs: []};
+                n.name = $(this).find('.node-input-nodes-container-value').val();
+                n.id = parseInt($(this).find('.node-input-nodes-container-index').text());
+                node.ms_nodes.push(n);
+            });
+        },
+        oneditresize: function(size) {
+                        var rows = $("#node-config-dialog-edit-form>div:not(.node-input-nodes-container-row)");
+            var height = size.height;
+            for (var i=0;i<rows.size();i++) {
+                height -= $(rows[i]).outerHeight(true);
+            }
+            var editorRow = $("#node-config-dialog-edit-form>div.node-input-nodes-container-row");
+            height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
+            $("#node-input-nodes-container").editableList('height',height);
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="MyGateway">
+    <div class="form-row">
+        <label for="node-config-input-host"><i class="icon-bookmark"></i> Host</label>
+        <input type="text" id="node-config-input-host">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-port"><i class="icon-bookmark"></i> Port</label>
+        <input type="text" id="node-config-input-port">
+    </div>
+    <div class="form-row node-input-nodes-container-row">
+        <ol id="node-input-nodes-container"></ol>
+    </div>
+
+</script>
