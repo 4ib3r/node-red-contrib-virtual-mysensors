@@ -11,6 +11,10 @@
   },
   "author": "Adrian Sławiński <adrian.slawinski@javadevelopers.pl>",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/4ib3r/node-red-contrib-virtual-mysensors.git"
+  },
   "node-red": {
     "version": ">=0.14.0",
     "nodes": {
