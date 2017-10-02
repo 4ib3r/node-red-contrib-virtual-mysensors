@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-virtual-mysensors",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Virtual MySensors sensors",
   "keywords": [
     "node-red"
