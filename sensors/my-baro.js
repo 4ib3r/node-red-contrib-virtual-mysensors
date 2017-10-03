@@ -7,15 +7,20 @@ module.exports = function(RED) {
         var node = this;
 
         node.on('input', function (msg) {
-            var type;
+            var type = null;
             switch (msg.topic) {
+                case "I_BATTERY_LEVEL":
+                    node.sensor.updateBattery(msg.payload);
+                    break;
                 case "V_TEMP": type = types.SUBTYPES.V_TEMP; break;
                 case "V_HUM": type = types.SUBTYPES.V_HUM; break;
                 case "V_FORECAST": type = types.SUBTYPES.V_FORECAST; break;
-                case "I_BATTERY_LEVEL": type = types.SUBTYPES.I_BATTERY_LEVEL; break;
-                default: type = types.SUBTYPES.V_PRESSURE;
+                default:
+                    type = types.SUBTYPES.V_HUM;
             }
-            node.sensor.setValue(type, msg.payload);
+            if (type !== null) {
+                node.sensor.setValue(type, msg.payload);
+            }
         });
     }
     RED.nodes.registerType("MyBarometer", MyBarometer);
