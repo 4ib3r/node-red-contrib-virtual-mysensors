@@ -8,7 +8,14 @@ module.exports = function (RED) {
         node.sensor.setValue(types.SUBTYPES.V_ID, this.id);
 
         node.on('input', function (msg) {
-            node.sensor.setValue(types.SUBTYPES.V_TEMP, msg.payload);
+            var type;
+            switch (msg.topic) {
+                case "I_BATTERY_LEVEL": type = types.SUBTYPES.I_BATTERY_LEVEL; break;
+                case "V_ID": type = types.SUBTYPES.V_ID; break;
+                default:
+                    type = types.SUBTYPES.V_TEMP;
+            }
+            node.sensor.setValue(type, msg.payload);
         });
     }
 

@@ -7,10 +7,13 @@ module.exports = function(RED) {
         var node = this;
 
         node.on('input', function (msg) {
-            var type = types.SUBTYPES.V_HUM;
+            var type;
             switch (msg.topic) {
-                case "V_TEMP": type = types.SUBTYPES.V_TEMP; break;
                 case "I_BATTERY_LEVEL": type = types.SUBTYPES.I_BATTERY_LEVEL; break;
+                case "V_TEMP": type = types.SUBTYPES.V_TEMP; break;
+                default:
+                    type = types.SUBTYPES.V_HUM;
+                    msg.payload = msg.payload ? 1 : 0;
             }
             node.sensor.setValue(type, msg.payload);
         });
