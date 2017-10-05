@@ -46,13 +46,15 @@ var helper = {
         });
         return node.sensor;
     },
-    inputEvent: function (RED, node, sensor) {
+    inputEvent: function (RED, node, sensor, fn) {
         node.on('input', function (msg) {
             if (types.SUBTYPES.hasOwnProperty(msg.topic)) {
                 var sType = types.SUBTYPES[msg.topic];
                 if (sensor.value.hasOwnProperty(sType)) {
                     sensor.setValue(sType, msg.payload);
                 }
+            } else if (fn !== undefined) {
+                fn(msg);
             }
         });
     }

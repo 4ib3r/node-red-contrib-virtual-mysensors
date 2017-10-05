@@ -10,7 +10,6 @@
             reqState: {value: true, required: true}
         },
         inputs: 1,
-        outputs: 2,
         icon: "hash.png",
         label: function () {
             return this.name;
@@ -89,5 +88,6 @@
 
 <script type="text/x-red" data-help-name="MyScene">
     <p>MySensors S_SCENE_CONTROLLER Actuator</p>
-
+    <p>Payload is boolean that send on/off message to controller</p>
+    <p>If topic is integer component send command on/off with scene number from topic</p>
 </script>
